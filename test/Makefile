@@ -38,5 +38,29 @@ TOPLEVEL = tb
 # MODULE is the basename of the Python test file
 MODULE = test
 
+# make BLOCK=yes: SHA-256 compression engine (sha07_block.v, test_sha07_block.py)
+ifeq ($(BLOCK),yes)
+VERILOG_SOURCES = $(SRC_DIR)/sha07_block.v $(SRC_DIR)/project.v
+TOPLEVEL = sha07_block
+MODULE = test_sha07_block
+SIM_BUILD = sim_build/block
+endif
+
+# make HMAC=yes: HMAC controller (hmac_ctrl.v, test_hmac_ctrl.py)
+ifeq ($(HMAC),yes)
+VERILOG_SOURCES = $(SRC_DIR)/hmac_ctrl.v $(SRC_DIR)/sha07_block.v $(SRC_DIR)/project.v
+TOPLEVEL = hmac_ctrl
+MODULE = test_hmac_ctrl
+SIM_BUILD = sim_build/hmac
+endif
+
+# make AVMM=yes: Avalon-MM wrapper (hmac_avmm.v, test_hmac_avmm.py)
+ifeq ($(AVMM),yes)
+VERILOG_SOURCES = $(SRC_DIR)/hmac_avmm.v $(SRC_DIR)/hmac_ctrl.v $(SRC_DIR)/sha07_block.v $(SRC_DIR)/project.v
+TOPLEVEL = hmac_avmm
+MODULE = test_hmac_avmm
+SIM_BUILD = sim_build/avmm
+endif
+
 # include cocotb's make rules to take care of the simulator setup
 include $(shell cocotb-config --makefiles)/Makefile.sim
