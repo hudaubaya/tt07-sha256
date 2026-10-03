@@ -1,9 +1,10 @@
 /*
- * hmac_avmm (tt07): Avalon-MM slave around hmac_ctrl (precomputed key states
+ * hmac07_avmm (tt07): Avalon-MM slave around hmac07_ctrl (precomputed key states
  * on sha07_block and the tt07 round core), for the DE10-Nano HPS.
  *
  * Same register map and software interface as the tt05-shaman hmac_avmm, so
- * the same driver works with either:
+ * the same driver works with either.  The modules are named hmac07_* so both
+ * wrappers can be instantiated in one Quartus project:
  *
  *   byte offset  name        access  contents
  *   0x00         CTRL        W       bit0 START, bit1 CLEAR_KEY, bit2 CLEAR_DATA
@@ -20,7 +21,7 @@
  *
  * Key handling: the first START after the key is written runs load_key (K^ipad
  * and K^opad are compressed once), then clears the KEY registers, so only the
- * derived key states (istate/ostate in hmac_ctrl) are kept; later STARTs cost
+ * derived key states (istate/ostate in hmac07_ctrl) are kept; later STARTs cost
  * two compressions.  Writing KEY again marks a new key for the next START.
  * KEY_LOADED means a key is written or its states are loaded.  CLEAR_KEY
  * clears the KEY registers and the key states.
@@ -35,12 +36,12 @@
  * that accepts START, whatever the key or message: LATENCY_LOADED when the
  * key states are already loaded, LATENCY_FRESH when the key was written since
  * (precompute + HMAC).  READY stays low and MAC reads return 0 until then.
- * (If hmac_ctrl were ever later, DONE would wait for it and lat_overrun would
+ * (If hmac07_ctrl were ever later, DONE would wait for it and lat_overrun would
  * be set; the tests check it never is.)
  *
  * Tamper: tamper_n (active-low push-button) is synchronised by two flip-flops.
  * The synchronised signal clears the KEY registers asynchronously and holds
- * hmac_ctrl (and with it sha07_block and the core) in asynchronous reset,
+ * hmac07_ctrl (and with it sha07_block and the core) in asynchronous reset,
  * which clears istate/ostate; otherwise it acts exactly like CLEAR_KEY.  From
  * the first clock edge that samples tamper_n low, all state is cleared within
  * 3 cycles.  STATUS.TAMPERED stays set until reset.
@@ -55,7 +56,7 @@
 
 `default_nettype none
 
-module hmac_avmm (
+module hmac07_avmm (
     input  wire        clk,
     input  wire        reset,            // active high, Avalon convention
     input  wire        tamper_n,         // active-low tamper push-button, asynchronous
@@ -69,7 +70,7 @@ module hmac_avmm (
 
   localparam [31:0] ID_VALUE = 32'h484D4143;
 
-  // START-accept edge to DONE, in cycles.  hmac_ctrl takes 1290 cycles per
+  // START-accept edge to DONE, in cycles.  hmac07_ctrl takes 1290 cycles per
   // load_key and per HMAC, plus the pulse/handover cycles.
   localparam [11:0] LATENCY_LOADED = 12'd1320;
   localparam [11:0] LATENCY_FRESH  = 12'd2620;
@@ -98,7 +99,7 @@ module hmac_avmm (
   reg [11:0] cnt;                 // cycles since START was accepted
   reg [11:0] deadline;            // LATENCY_LOADED or LATENCY_FRESH
   reg        ctrl_finished;       // the HMAC itself has finished
-  reg        lat_overrun;         // debug: hmac_ctrl later than the deadline
+  reg        lat_overrun;         // debug: hmac07_ctrl later than the deadline
   reg        tamper_ff1, tamper_ff2;
 
   wire         ctrl_ready, ctrl_key_valid, ctrl_done, ctrl_err;
@@ -272,7 +273,7 @@ module hmac_avmm (
     end
   end
 
-  // ---- byte-order conversion to hmac_ctrl (byte 0 in the top bits) --------
+  // ---- byte-order conversion to hmac07_ctrl (byte 0 in the top bits) --------
   wire [255:0] key_be;
   wire [439:0] msg_be;
   generate
@@ -285,7 +286,7 @@ module hmac_avmm (
   endgenerate
 
   // tamper is a flip-flop output, so it is safe in this asynchronous reset
-  hmac_ctrl ctrl (
+  hmac07_ctrl ctrl (
       .clk      (clk),
       .rst_n    (!reset && !tamper),
       .key      (key_be),
