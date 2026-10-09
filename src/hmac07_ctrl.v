@@ -1,5 +1,5 @@
 /*
- * hmac_ctrl (tt07): HMAC-SHA256 on sha07_block, with the key precomputed.
+ * hmac07_ctrl (tt07): HMAC-SHA256 on sha07_block, with the key precomputed.
  *
  * Because sha07_block exposes the SHA-256 chaining value, the two key blocks
  * are compressed once per key:
@@ -27,7 +27,7 @@
 
 `default_nettype none
 
-module hmac_ctrl (
+module hmac07_ctrl (
     input  wire         clk,
     input  wire         rst_n,
 

@@ -46,18 +46,18 @@ MODULE = test_sha07_block
 SIM_BUILD = sim_build/block
 endif
 
-# make HMAC=yes: HMAC controller (hmac_ctrl.v, test_hmac_ctrl.py)
+# make HMAC=yes: HMAC controller (hmac07_ctrl.v, test_hmac_ctrl.py)
 ifeq ($(HMAC),yes)
-VERILOG_SOURCES = $(SRC_DIR)/hmac_ctrl.v $(SRC_DIR)/sha07_block.v $(SRC_DIR)/project.v
-TOPLEVEL = hmac_ctrl
+VERILOG_SOURCES = $(SRC_DIR)/hmac07_ctrl.v $(SRC_DIR)/sha07_block.v $(SRC_DIR)/project.v
+TOPLEVEL = hmac07_ctrl
 MODULE = test_hmac_ctrl
 SIM_BUILD = sim_build/hmac
 endif
 
-# make AVMM=yes: Avalon-MM wrapper (hmac_avmm.v, test_hmac_avmm.py)
+# make AVMM=yes: Avalon-MM wrapper (hmac07_avmm.v, test_hmac_avmm.py)
 ifeq ($(AVMM),yes)
-VERILOG_SOURCES = $(SRC_DIR)/hmac_avmm.v $(SRC_DIR)/hmac_ctrl.v $(SRC_DIR)/sha07_block.v $(SRC_DIR)/project.v
-TOPLEVEL = hmac_avmm
+VERILOG_SOURCES = $(SRC_DIR)/hmac07_avmm.v $(SRC_DIR)/hmac07_ctrl.v $(SRC_DIR)/sha07_block.v $(SRC_DIR)/project.v
+TOPLEVEL = hmac07_avmm
 MODULE = test_hmac_avmm
 SIM_BUILD = sim_build/avmm
 endif

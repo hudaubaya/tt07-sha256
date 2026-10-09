@@ -28,7 +28,7 @@
 #define HMAC_OFFSET    0x00000000u
 #endif
 
-/* register byte offsets (see src/hmac_avmm.v) */
+/* register byte offsets (see src/hmac07_avmm.v; same map as tt05-shaman) */
 #define REG_CTRL    0x00
 #define REG_STATUS  0x04
 #define REG_MSG_LEN 0x08

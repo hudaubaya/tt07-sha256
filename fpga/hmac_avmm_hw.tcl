@@ -1,4 +1,4 @@
-# Platform Designer (Qsys) component for hmac_avmm.
+# Platform Designer (Qsys) component for hmac07_avmm (tt07 HMAC wrapper).
 #
 # Put this file in a directory on the Platform Designer IP search path (or
 # the project directory), add "HMAC-SHA256 (tt07 round core)" to the system, and
@@ -10,7 +10,7 @@
 
 package require -exact qsys 16.1
 
-set_module_property NAME hmac_avmm
+set_module_property NAME hmac07_avmm
 set_module_property DISPLAY_NAME "HMAC-SHA256 (tt07 round core)"
 set_module_property VERSION 1.0
 set_module_property GROUP "Cryptography"
@@ -18,16 +18,16 @@ set_module_property DESCRIPTION "HMAC-SHA256 on the tt07 SHA-256 round core with
 set_module_property EDITABLE false
 
 add_fileset QUARTUS_SYNTH QUARTUS_SYNTH "" ""
-set_fileset_property QUARTUS_SYNTH TOP_LEVEL hmac_avmm
-add_fileset_file hmac_avmm.v VERILOG PATH ../src/hmac_avmm.v TOP_LEVEL_FILE
-add_fileset_file hmac_ctrl.v VERILOG PATH ../src/hmac_ctrl.v
+set_fileset_property QUARTUS_SYNTH TOP_LEVEL hmac07_avmm
+add_fileset_file hmac07_avmm.v VERILOG PATH ../src/hmac07_avmm.v TOP_LEVEL_FILE
+add_fileset_file hmac07_ctrl.v VERILOG PATH ../src/hmac07_ctrl.v
 add_fileset_file sha07_block.v VERILOG PATH ../src/sha07_block.v
 add_fileset_file project.v VERILOG PATH ../src/project.v
 
 add_fileset SIM_VERILOG SIM_VERILOG "" ""
-set_fileset_property SIM_VERILOG TOP_LEVEL hmac_avmm
-add_fileset_file hmac_avmm.v VERILOG PATH ../src/hmac_avmm.v
-add_fileset_file hmac_ctrl.v VERILOG PATH ../src/hmac_ctrl.v
+set_fileset_property SIM_VERILOG TOP_LEVEL hmac07_avmm
+add_fileset_file hmac07_avmm.v VERILOG PATH ../src/hmac07_avmm.v
+add_fileset_file hmac07_ctrl.v VERILOG PATH ../src/hmac07_ctrl.v
 add_fileset_file sha07_block.v VERILOG PATH ../src/sha07_block.v
 add_fileset_file project.v VERILOG PATH ../src/project.v
 
@@ -35,6 +35,10 @@ add_fileset_file project.v VERILOG PATH ../src/project.v
 add_interface clock clock end
 set_interface_property clock clockRate 0
 add_interface_port clock clk clk Input 1
+
+# tamper push-button (active low, asynchronous; synchronised inside)
+add_interface tamper conduit end
+add_interface_port tamper tamper_n tamper_n Input 1
 
 # reset (active high, synchronous deassertion from the reset controller)
 add_interface reset reset end

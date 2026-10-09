@@ -1,5 +1,5 @@
 '''
-Tests for hmac_ctrl.v (tt07): HMAC-SHA256 with precomputed key states on
+Tests for hmac07_ctrl.v (tt07): HMAC-SHA256 with precomputed key states on
 sha07_block and the tt07 round core.  Run with:  make HMAC=yes
 '''
 
